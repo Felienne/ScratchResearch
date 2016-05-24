@@ -1,0 +1,193 @@
+%-----------------------------------------------------------------------------
+%
+%               Template for sigplanconf LaTeX Class
+%
+% Name:         sigplanconf-template.tex
+%
+% Purpose:      A template for sigplanconf.cls, which is a LaTeX 2e class
+%               file for SIGPLAN conference proceedings.
+%
+% Guide:        Refer to "Author's Guide to the ACM SIGPLAN Class,"
+%               sigplanconf-guide.pdf
+%
+% Author:       Paul C. Anagnostopoulos
+%               Windfall Software
+%               978 371-2316
+%               paul@windfall.com
+%
+% Created:      15 February 2005
+%
+%-----------------------------------------------------------------------------
+
+
+\documentclass[preprint]{sigplanconf}
+
+% The following \documentclass options may be useful:
+
+% preprint      Remove this option only once the paper is in final form.
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% numbers       To obtain numeric citation style instead of author/year.
+
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{graphicx}
+
+\newcommand{\cL}{{\cal L}}
+\newcommand{\nPatterns}{?}
+\newcommand{\nPatternsInitial}{?}
+\newcommand{\nPatternsCoded}{?}
+\newcommand{\nOccurrences}{?}
+\newcommand{\nKids}{?}
+\newcommand{\todo}{TODO!!!}
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\conferenceinfo{CONF 'yy}{Month d--d, 20yy, City, ST, Country}
+\copyrightyear{20yy}
+\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
+\copyrightdoi{nnnnnnn.nnnnnnn}
+
+% Uncomment the publication rights you want to use.
+%\publicationrights{transferred}
+%\publicationrights{licensed}     % this is the default
+%\publicationrights{author-pays}
+
+\titlebanner{banner above paper title}        % These are ignored unless
+\preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{Abscratchion: Enhacning Scratch with higher-level custom blocks}
+\subtitle{Subtitle Text, if any}
+
+\authorinfo{Name1}
+           {Affiliation1}
+           {Email1}
+\authorinfo{Name2\and Name3}
+           {Affiliation2/3}
+           {Email2/3}
+
+\maketitle
+
+\begin{abstract}
+Several recent studies have shown that Scratch is an appropriate language for introductory programs. But, is Scratch powerful enough to express everything users want to express? We have analyzed 250.000 programs from the public Scratch repository to  find commonly occurring code patterns. We found \nPatterns~that together occurred in \nOccurrences. Some of the patterns were clearly game related, like `change this characters costume when this happens' while others were generic, like `perform this action until a key is released'. We see these commonly occurring blocks as opportunities to make Scratch powerful, and to that end we have implemented them as custom blocks and subsequently ran a study with \nKids~ demonstrating...\todo.
+
+
+\end{abstract}
+
+\category{CR-number}{subcategory}{third-level}
+
+
+\terms{terms}
+
+\keywords{Scratch, block-based languages, programming practices, code smells, static analysis}
+
+\section{Introduction}
+
+Scratch \cite{resnick_scratch:_2009} is a programming language developed to teach children programming by enabling them to create games and interactive animations. The public repository of Scratch programs contains over 14 million projects. Scratch is a \emph{block-based} language: users manipulate blocks to program.
+
+Block-based languages have existed since the eighties, but have recently gained traction as language for programming education. In addition to Scratch, also Alice~\cite{conway_alice:_1994}, Blockly\footnote{\url{https://developers.google.com/blockly/}} and App Inventor~\cite{wolber_app_2011} are block-languages aimed at novice programmers.
+
+Several studies have shown that block-based languages are powerful as tools for teaching programming~\cite{meerbaum-salant_learning_2010, b._moskal_evaluating_2005,cooper_teaching_2003,price_comparing_2015}. Previous works involving static analysis of Scratch programs have evaluated the application of various programming concepts in Scratch projects \cite{Maloney_2008,moreno_automatic_2014}. Recent works have focused on bad programming practices within Scratch programs \cite{Meerbaum_habits_2011}, and automated quality assessment tools have been proposed for identifying code smells~\cite{fowler_refactoring:_1999}~and bad programming practices \cite{boe_hairball:_2013,moreno_automatic_2014}. A recent controlled experiment found that long scripts and code duplication decreases a novice programmer's ability to understand and modify Scratch programs \cite{hermans_2016}.
+
+The goal of this paper is twofold. Firstly, we aim to understand which combinations of Scratch blocks are commonly used together. To that end we run a clone detection algorithm over a previously released dataset of 250.000 Scratch programs, resulting in \nPatterns.
+
+Subsequently, we investigate whether offering some of those combinations as built-in blocks will increase novice Scratch programmers productivity and programming enjoyment. To that end we run a controlled experiment with \nKids middle-school aged kids. The findings indicate \todo. To the best of our knowledge, this is the first study into the effects of abstraction on the Scratch programming language.
+
+The contributions of this paper are as follows:
+
+\begin{itemize}
+	\item{An analysis of commonly occurring block combinations in the previously released open dataset (Section \ref{sec:patterns})}
+	\item{A manual classification of those patterns into groups (Section \ref{sec:coding})}
+	\item{A controlled experiment researching the applicability of the patterns (Section \ref{sec:experiment})}
+\end{itemize}
+
+\section{Relevant Scratch Concepts}
+\label{sec:scratch}
+This paper is by no means an introduction into Scratch programming, we refer the reader to \cite{brennan_creative_2014} for an extensive overview. To make this paper self-contained, however, we explain a number of relevant concepts in this section. 
+
+Scratch is a block-based programming language aimed at children, developed by MIT. Scratch can be used to create games and interactive animations, and is available both as a stand-alone and as a web application. Figure \ref{fig:ui} shows the Scratch user interface. The main concepts in the Scratch programming environment are:
+
+\begin{description}
+	\item [Sprites] Scratch code is organized by `sprites': two dimensional pictures each having their own associated code. Scratch allows users to bring their sprites to life in various ways, for example by moving them in the plane, having them say or think words or sentences via text balloons, but also by having them make sounds, grow, shrink and switch costumes. The Scratch program in Figure \ref{fig:ui} contains two one sprites, the cat, which is Scratch's default sprite and a piano. The code in Sprite1 will cause the cat to move right when the right arrow is pressed, and when the green flag is clicked it will continuously sense touching the piano.
+	\item [Scripts]Sprites can have multiple code blocks, called scripts. The Scratch code in Figure \ref{fig:ui} has two distinct scripts, one started by clicking on the green flag and one by pressing the space bar. It is possible for a single sprite to have multiple scripts initiated by the same event. In that case, all scripts will be executed simultaneously.
+	\item [Events] Scratch is \emph{event-driven}: all motions, sounds and changes in the looks of sprites are initiated by events called Hat blocks\footnote{\url{http://wiki.scratch.mit.edu/wiki/Hat_Block}}). The canonical event is the \texttt{when Green Flag clicked}, activated by clicking the green flag at the top of the user interface. In addition to the green flag, there are a number of other events possible, including key presses, mouse clicks and input from a computer's microphone or webcam. The Scratch code in Sprite1 in Figure \ref{fig:ui} contains two events: \texttt{when Green Flag clicked} and \texttt{when <right arrow> key pressed}, each with associated blocks.
+	\item [Signals] Events within Scratch can be user generated too: users can broadcast a message, for example when two sprites touch each other, like in Figure \ref{fig:ui}. All other sprites can then react by using the \texttt{when I receive} Hat block. In Figure \ref{fig:ui}, Sprite1 broadcasts `bump' when the cat touches the Piano. 
+	\item[Custom blocks] Scratch users can define their own blocks, which users can name themselves, called custom blocks. The creation of custom blocks in Scratch is the equivalent of defining procedures in other languages \cite{moreno_automatic_2014}. Because the term `procedures' is common in related work, we will refer to custom blocks as `procedures' in the remainder of this paper. Procedures can have input parameters of type string, number, and boolean. When a user defines a procedure, a new Hat block called \texttt{define} appears, which users can fill with the implementation of their block.
+\end{description}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{fig/ui.png}
+		\vspace{-1em}
+		\caption{The Scratch user interface consisting of the `cat' sprite on the left, the toolbox with available blocks in the category `Events' in the middle and the code associated with the sprite on the right.}
+		\label{fig:ui}
+	\end{center}
+\end{figure} 
+
+\section{Scratch source code patterns}
+\label{sec:Patterns}
+
+The main focus of this study is to understand how people program in Scratch by analyzing the characteristics of Scratch projects. To answer our three research questions, we conducted an empirical quantitative evaluation of project data we collected from the Scratch project repository. In the following paragraphs we describe the dataset, the process and the tools we used for analyzing it, and the methods we followed for detecting code smells.
+
+\subsection{Dataset}
+\label{dataset}
+
+\subsection{Pattern Analysis}
+
+\todo Fenia, can you explain how exactly obtained the blocks?
+
+\subsection{Results}
+
+The above described algorithm resulted in \nPatternsInitial~patterns, the most common ones are shown in table \todo. The full set is available here: \todo
+
+\section{Coding}
+\label{sec:coding}
+While investigating the results of the pattern finding algorithm, we found many patterns differed only slightly from each other. We therefore decided to use \todo describe coding in more detail. 
+
+\subsection{Approach}
+The two authors of this paper coded the blocks individually and then compared notes \todo etc.
+
+\subsection{Results}
+The above described coding resulted in \nPatternsCoded, of which we found ... to be game related and ... generic programming blocks. Of those, we used ... in the subsequent experiment.
+
+\section{Experiment}
+\label{sec:experiment}
+
+\subsection{Setup}
+\subsubsection{Context}
+
+\subsubsection{Participants}
+
+\subsubsection{Selected Blocks}
+
+
+
+
+\appendix
+\section{Appendix Title}
+
+This is the text of the appendix, if you need one.
+
+\acks
+
+We would like to that the schools.... \todo
+% We recommend abbrvnat bibliography style.
+
+\bibliographystyle{abbrvnat}
+
+% The bibliography should be embedded for final submission.
+
+\begin{thebibliography}{}
+\softraggedright
+
+\bibitem[Smith et~al.(2009)Smith, Jones]{smith02}
+P. Q. Smith, and X. Y. Jones. ...reference text...
+
+\end{thebibliography}
+
+
+\end{document}
