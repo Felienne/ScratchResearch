@@ -34,6 +34,7 @@
 \usepackage{graphicx}
 
 \newcommand{\cL}{{\cal L}}
+\newcommand{\nScriptPrograms}{233,491}
 \newcommand{\nPatterns}{?}
 \newcommand{\nPatternsInitial}{?}
 \newcommand{\nPatternsCoded}{?}
@@ -136,9 +137,17 @@ The main focus of this study is to understand how people program in Scratch by a
 \subsection{Dataset}
 \label{dataset}
 
+ For our study we used the Kragle dataset \todo{reference} of JSON code of \nScriptPrograms~non-empty Scratch projects. We wanted to examine the frequency of block patterns and for this we had to utilize original projects only ---otherwise, frequency metrics would be affected by the number of remixes that projects might have. To identify and exclude remixes, we queried the Scratch website and scraped the responses for remixing information. 12,167 of the projects in the Kragle dataset were found to be remixes of other projects and were excluded.
+ 
+The JSON files of the remaining 221,324 projects were parsed according to the specification of the format.\footnote{\url{http://wiki.scratch.mit.edu/wiki/Scratch_File_Format_(2.0)}} This resulted in a list of used blocks and associated parameters per project, sprite and script.
+
 \subsection{Pattern Analysis}
 
-\todo Fenia, can you explain how exactly obtained the blocks?
+All project data, including the list of used blocks and parameters, were imported in a relational database. We used SQL queries to extract all code block patterns with sizes from four up to nine. For example, for a script containing code blocks \texttt{[A B C D E F]} we would extract fragments \texttt{[A B C D]}, \texttt{[B C D E]}, \texttt{[C D E F]}, \texttt{[A B C D E]}, \texttt{[B C D E F]} and \texttt{[A B C D E F]}. We set the four to nine limits because we found that code block fragments with three or less code blocks were too small to have semantic significance while fragments with ten or more blocks were to rarely recurring. For the identification of clones we did not take into account the values of the parameters that may be used in the blocks, so that two blocks that only differ in the values of parameters are considered to be equal. For example, Scratch blocks appearing as \texttt{wait 2 secs} and \texttt{wait 3 secs} are both represented as the same \texttt{"wait:elapsed:from:"} block in the patterns.
+
+After extracting all code block patterns in the dataset, we used aggregation queries for calculating their frequency in terms of overall appearances, of distinct scripts that they are part of, and of distinct projects that they appear in. We further randomly sampled and manually inspected the most frequent patterns. For the identification of those we mainly used the frequency in terms of distinct scripts and projects metrics, because manual inspection revealed that the number of overall appearances of the patterns is a misleading metric for their actual usability in the case of repeating block combinations. For example, in a script with blocks 
+\texttt{[A B C B C B C B C]} pattern \texttt{[B C B C]} occurs three times. If a script with blocks 
+\texttt{[A B C D]} is in two different projects, pattern \texttt{[A B C D]} would still be considered less frequent than \texttt{[B C B C]} using the overall appearances metric. To avoid this and calculate the actual utilization frequency of code block combinations in Scratch programs, we use pattern frequency in terms of distinct scripts and projects as indicators.
 
 \subsection{Results}
 
